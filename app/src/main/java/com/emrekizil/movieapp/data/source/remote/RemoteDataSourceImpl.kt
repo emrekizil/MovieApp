@@ -6,5 +6,5 @@ import retrofit2.Response
 import javax.inject.Inject
 
 class RemoteDataSourceImpl @Inject constructor(private val movieApi: MovieApi) : RemoteDataSource {
-    override suspend fun getPopularMovie(): Response<MovieResponse> = movieApi.getPopularMovie()
+    override suspend fun getPopularMovie(pageNumber:Int): Response<MovieResponse> = movieApi.getPopularMovie(pageNumber)
 }

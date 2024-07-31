@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
@@ -20,6 +22,11 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    val properties = Properties()
+    properties.load(project.rootProject.file("local.properties").inputStream())
+
+
+
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -27,6 +34,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            buildConfigField("String","API_KEY","\"${properties.getProperty("API_KEY")}\"")
         }
     }
 
@@ -58,6 +66,10 @@ dependencies {
 
     //Hilt
     implementation ("com.google.dagger:hilt-android:2.51.1")
+    implementation(libs.androidx.legacy.support.v4)
+    implementation(libs.androidx.lifecycle.livedata.ktx)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.androidx.fragment.ktx)
     kapt ("com.google.dagger:hilt-compiler:2.51.1")
 
     //Coil
@@ -69,6 +81,9 @@ dependencies {
 
     //Coroutines
     implementation(libs.kotlinx.coroutines.android)
+
+    //Paging
+    implementation(libs.androidx.paging.runtime)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
