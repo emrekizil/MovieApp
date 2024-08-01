@@ -1,3 +1,4 @@
+import java.io.FileInputStream
 import java.util.Properties
 
 plugins {
@@ -12,6 +13,10 @@ android {
     namespace = "com.emrekizil.movieapp"
     compileSdk = 34
 
+    val file = rootProject.file("local.properties")
+    val properties = Properties()
+    properties.load(FileInputStream(file))
+
     defaultConfig {
         applicationId = "com.emrekizil.movieapp"
         minSdk = 21
@@ -19,13 +24,11 @@ android {
         versionCode = 1
         versionName = "1.0"
 
+        buildConfigField("String", "API_KEY", properties.getProperty("API_KEY"))
+
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
     }
-
-    val properties = Properties()
-    properties.load(project.rootProject.file("local.properties").inputStream())
-
-
 
     buildTypes {
         release {
@@ -34,12 +37,12 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            buildConfigField("String","API_KEY","\"${properties.getProperty("API_KEY")}\"")
         }
     }
 
     buildFeatures {
         viewBinding = true
+        buildConfig = true
     }
 
     compileOptions {
@@ -65,12 +68,12 @@ dependencies {
     implementation(libs.converter.gson)
 
     //Hilt
-    implementation ("com.google.dagger:hilt-android:2.51.1")
+    implementation("com.google.dagger:hilt-android:2.51.1")
     implementation(libs.androidx.legacy.support.v4)
     implementation(libs.androidx.lifecycle.livedata.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.fragment.ktx)
-    kapt ("com.google.dagger:hilt-compiler:2.51.1")
+    kapt("com.google.dagger:hilt-compiler:2.51.1")
 
     //Coil
     implementation(libs.coil)
@@ -84,6 +87,7 @@ dependencies {
 
     //Paging
     implementation(libs.androidx.paging.runtime)
+
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

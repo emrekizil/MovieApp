@@ -15,11 +15,17 @@ object NetworkModule {
 
     @Provides
     @ViewModelScoped
-    fun getMovieApi() : MovieApi {
+    fun provideRetrofit() : Retrofit {
         return Retrofit.Builder()
             .baseUrl("https://api.themoviedb.org/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
-            .create(MovieApi::class.java)
+    }
+
+    @Provides
+    @ViewModelScoped
+    fun provideMovieApi(retrofit: Retrofit): MovieApi {
+        return retrofit.create(MovieApi::class.java)
     }
 }
+
