@@ -32,4 +32,8 @@ data class Result(
     val voteAverage: Double?,
     @SerializedName("vote_count")
     val voteCount: Int?
-)
+) {
+    fun getPosterImageUrl():String{
+        return "https://image.tmdb.org/t/p/w300${this.posterPath}"
+    }
+}

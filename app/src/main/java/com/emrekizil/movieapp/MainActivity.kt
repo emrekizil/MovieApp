@@ -24,7 +24,11 @@ class MainActivity : AppCompatActivity() {
         bottomNavigation.setupWithNavController(navController)
     }
 
-    fun hideBottomNavigation(){
+    fun hideBottomNavigationBar(){
         binding.bottomNavigation.visibility = View.GONE
+    }
+
+    fun showBottomNavigationBar(){
+        binding.bottomNavigation.visibility = View.VISIBLE
     }
 }
