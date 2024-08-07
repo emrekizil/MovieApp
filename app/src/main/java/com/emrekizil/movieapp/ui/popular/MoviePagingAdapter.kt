@@ -81,7 +81,7 @@ class MoviePagingAdapter : PagingDataAdapter<Result, RecyclerView.ViewHolder>(Mo
             ){
                 scale(Scale.FILL)
             }
-            binding.movieScore.text = movie.voteAverage.toString()
+            binding.movieScore.text = movie.getRatingRounded().toString()
         }
     }
 

@@ -2,6 +2,8 @@ package com.emrekizil.movieapp.data.dto.popular
 
 
 import com.google.gson.annotations.SerializedName
+import kotlin.math.round
+import kotlin.math.roundToLong
 
 data class Result(
     @SerializedName("adult")
@@ -33,7 +35,13 @@ data class Result(
     @SerializedName("vote_count")
     val voteCount: Int?
 ) {
-    fun getPosterImageUrl():String{
-        return "https://image.tmdb.org/t/p/w300${this.posterPath}"
+    fun getPosterImageUrl(): String {
+        return "https://image.tmdb.org/t/p/w400${this.posterPath}"
+    }
+
+    fun getRatingRounded(): Double {
+        return this.voteAverage?.let {
+            round(it.times(10)) / 10
+        } ?: 0.0
     }
 }
