@@ -12,4 +12,11 @@ interface MovieApi {
         @Query("page") pageNumber: Int,
         @Query("api_key") apiKey: String = BuildConfig.API_KEY
     ): Response<MovieResponse>
+
+    @GET("/3/search/movie")
+    suspend fun getMovieByName(
+        @Query("page") pageNumber: Int,
+        @Query("query") query: String,
+        @Query("api_key") apiKey: String = BuildConfig.API_KEY
+    ) : Response<MovieResponse>
 }

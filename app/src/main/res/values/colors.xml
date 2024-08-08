@@ -4,4 +4,7 @@
     <color name="white">#FFFFFFFF</color>
     <color name="red">#C11414</color>
     <color name="bottom_nav_background">#EB1c1d22</color>
+    <color name="app_background">#191a1f</color>
+    <color name="search_bar_background">#1f222b</color>
+    <color name="search_bar_hint_color">#6b6e72</color>
 </resources>

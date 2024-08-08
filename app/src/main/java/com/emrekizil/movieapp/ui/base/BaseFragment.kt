@@ -22,8 +22,8 @@ abstract class BaseFragment<T : ViewBinding>(factory: (LayoutInflater) -> T) : F
         return binding.root
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         observeUi()
     }
 
@@ -40,4 +40,5 @@ abstract class BaseFragment<T : ViewBinding>(factory: (LayoutInflater) -> T) : F
     fun showBottomNavigationBar(){
         (activity as MainActivity).showBottomNavigationBar()
     }
+
 }

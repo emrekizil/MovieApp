@@ -7,4 +7,5 @@ import kotlinx.coroutines.flow.Flow
 
 interface MovieRepository {
     fun getPopularMovie(pageNumber: Int): Flow<PagingData<Result>>
+    fun getMovieByName(pageNumber: Int, query:String) : Flow<PagingData<Movie>>
 }

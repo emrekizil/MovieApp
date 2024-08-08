@@ -6,6 +6,11 @@ import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.viewbinding.ViewBinding
+import com.google.android.material.textfield.TextInputEditText
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.onStart
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
@@ -28,3 +33,24 @@ fun <T : ViewBinding> Fragment.viewBinding(factory: (LayoutInflater) -> T): Read
             binding = null
         }
     }
+
+infix fun String.okWith(bound: Int) = length > bound
+
+fun TextInputEditText.observeTextChanges(): Flow<String> {
+    return callbackFlow {
+        val textWatcher = object : AbstractTextWatcher() {
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                super.onTextChanged(p0, p1, p2, p3)
+                trySend(p0.toString())
+            }
+        }
+        addTextChangedListener(textWatcher)
+        awaitClose {
+            removeTextChangedListener(textWatcher)
+        }
+    }.onStart {
+        text?.let {
+            (it.toString())
+        }
+    }
+}

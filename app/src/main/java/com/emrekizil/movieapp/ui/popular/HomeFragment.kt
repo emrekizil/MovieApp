@@ -24,7 +24,9 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
 
     private val viewModel: HomeViewModel by viewModels()
 
-    private val adapter = MoviePagingAdapter()
+    private val adapter = MoviePagingAdapter { result ->
+        navigateToDetailFragment(result)
+    }
 
     private var layoutManagerState: Parcelable? = null
 
@@ -43,6 +45,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
             }
             binding.recyclerView.layoutManager?.onRestoreInstanceState(layoutManagerState)
         }
+        showBottomNavigationBar()
     }
 
     private fun getData() {
@@ -57,5 +60,10 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
 
     private fun setUpAdapter() {
         binding.recyclerView.adapter = adapter
+    }
+
+    private fun navigateToDetailFragment(movieId: Int) {
+        val action = HomeFragmentDirections.actionHomeFragmentToDetailFragment(movieId)
+        navigate(action)
     }
 }
