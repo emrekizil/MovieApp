@@ -29,11 +29,17 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(FragmentSearchBinding
 
     private val viewmodel : SearchViewModel by viewModels()
 
-    private val adapter  = SearchPagingAdapter()
+    private val adapter  = SearchPagingAdapter().apply {
+        setOnMovieItemClickListener {
+            val action = SearchFragmentDirections.actionSearchFragmentToDetailFragment(it)
+            navigate(action)
+        }
+    }
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        showBottomNavigationBar()
         binding.searchRecyclerView.adapter = adapter
         getData()
         binding.searchEditText.observeTextChanges()

@@ -1,9 +1,11 @@
 package com.emrekizil.movieapp.data.api
 
 import com.emrekizil.movieapp.BuildConfig
+import com.emrekizil.movieapp.data.dto.detail.MovieDetailResponse
 import com.emrekizil.movieapp.data.dto.popular.MovieResponse
 import retrofit2.Response
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface MovieApi {
@@ -18,5 +20,11 @@ interface MovieApi {
         @Query("page") pageNumber: Int,
         @Query("query") query: String,
         @Query("api_key") apiKey: String = BuildConfig.API_KEY
-    ) : Response<MovieResponse>
+    ): Response<MovieResponse>
+
+    @GET("/3/movie/{movieId}")
+    suspend fun getMovieDetailById(
+        @Path("movieId") movieId: Int,
+        @Query("api_key") apiKey: String = BuildConfig.API_KEY
+    ) : Response<MovieDetailResponse>
 }
