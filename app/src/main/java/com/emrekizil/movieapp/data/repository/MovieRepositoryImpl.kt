@@ -6,15 +6,20 @@ import androidx.paging.PagingData
 import com.emrekizil.movieapp.data.ResponseState
 import com.emrekizil.movieapp.data.dto.detail.MovieDetailResponse
 import com.emrekizil.movieapp.data.dto.popular.Result
+import com.emrekizil.movieapp.data.source.local.LocalDataSource
 import com.emrekizil.movieapp.data.source.paging.MoviePagingSource
 import com.emrekizil.movieapp.data.source.paging.SearchMoviePagingSource
 import com.emrekizil.movieapp.data.source.remote.RemoteDataSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-class MovieRepositoryImpl @Inject constructor(private val remoteDataSource: RemoteDataSource) :
+class MovieRepositoryImpl @Inject constructor(
+    private val remoteDataSource: RemoteDataSource,
+    private val localDataSource: LocalDataSource
+) :
     MovieRepository {
     override fun getPopularMovie(pageNumber: Int): Flow<PagingData<Result>> {
         return Pager(
@@ -43,4 +48,23 @@ class MovieRepositoryImpl @Inject constructor(private val remoteDataSource: Remo
             emit(ResponseState.Error(it.message.orEmpty()))
         }
     }
+
+    override suspend fun insertMovie(movie: MovieDetail) {
+        localDataSource.insertMovie(movie.toEntity())
+    }
+
+    override suspend fun deleteMovie(movie: MovieDetail) {
+        localDataSource.deleteMovie(movie.toEntity())
+    }
+
+    override fun getFavoriteMovies(): Flow<List<MovieDetail>> =
+        localDataSource.getFavoriteMovies().map {
+            it.map { entity -> entity.toMovieDetail() }
+        }
+
+    override suspend fun saveLayoutPreference(isGridMode: Boolean) {
+        localDataSource.saveLayoutPreference(isGridMode)
+    }
+
+    override fun getLayoutPreference(): Flow<Boolean> = localDataSource.getLayoutPreference()
 }

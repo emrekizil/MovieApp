@@ -88,7 +88,14 @@ dependencies {
     //Paging
     implementation(libs.androidx.paging.runtime)
 
+    //Room
+    implementation(libs.androidx.room.runtime)
+    kapt (libs.androidx.room.compiler)
+    implementation(libs.androidx.room.ktx)
 
+    //DataStore
+    implementation (libs.androidx.datastore.preferences)
+    
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

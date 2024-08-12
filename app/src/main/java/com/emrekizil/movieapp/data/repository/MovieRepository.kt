@@ -11,4 +11,9 @@ interface MovieRepository {
     fun getPopularMovie(pageNumber: Int): Flow<PagingData<Result>>
     fun getMovieByName(pageNumber: Int, query:String) : Flow<PagingData<Movie>>
     fun getMovieDetailById(movieId:Int):Flow<ResponseState<MovieDetailResponse>>
+    suspend fun insertMovie(movie: MovieDetail)
+    suspend fun deleteMovie(movie: MovieDetail)
+    fun getFavoriteMovies(): Flow<List<MovieDetail>>
+    suspend fun saveLayoutPreference(isGridMode: Boolean)
+    fun getLayoutPreference(): Flow<Boolean>
 }

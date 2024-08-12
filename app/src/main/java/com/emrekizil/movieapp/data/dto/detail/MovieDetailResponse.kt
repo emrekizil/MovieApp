@@ -1,7 +1,9 @@
 package com.emrekizil.movieapp.data.dto.detail
 
 
+import com.emrekizil.movieapp.data.repository.MovieDetail
 import com.google.gson.annotations.SerializedName
+import kotlin.math.round
 
 data class MovieDetailResponse(
     @SerializedName("adult")
@@ -56,4 +58,28 @@ data class MovieDetailResponse(
     val voteAverage: Double?,
     @SerializedName("vote_count")
     val voteCount: Int?
-)
+) {
+    fun getPosterImageUrl(): String {
+        return "https://image.tmdb.org/t/p/original${this.backdropPath}"
+    }
+
+    fun getRatingRounded(): Double {
+        return this.voteAverage?.let {
+            round(it.times(10)) / 10
+        } ?: 0.0
+    }
+
+    fun toMovieDetail() : MovieDetail {
+        return MovieDetail(
+            this.id ?: 0,
+            this.overview ?: "",
+            this.backdropPath ?: "",
+            this.genres?.map {
+                it?.name!!
+            } ?: listOf(""),
+            this.voteAverage ?: 0.0,
+            this.title ?: "",
+            this.releaseDate ?:""
+        )
+    }
+}

@@ -7,6 +7,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.filter
 import androidx.paging.map
@@ -27,9 +28,9 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class SearchFragment : BaseFragment<FragmentSearchBinding>(FragmentSearchBinding::inflate) {
 
-    private val viewmodel : SearchViewModel by viewModels()
+    private val viewmodel: SearchViewModel by viewModels()
 
-    private val adapter  = SearchPagingAdapter().apply {
+    private val adapter = SearchPagingAdapter().apply {
         setOnMovieItemClickListener {
             val action = SearchFragmentDirections.actionSearchFragmentToDetailFragment(it)
             navigate(action)
@@ -43,26 +44,43 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(FragmentSearchBinding
         binding.searchRecyclerView.adapter = adapter
         getData()
         binding.searchEditText.observeTextChanges()
-            .filter { it okWith MINIMUM_SEARCH_LENGTH  }
+            .filter { it okWith MINIMUM_SEARCH_LENGTH }
             .debounce(MILLISECONDS)
             .distinctUntilChanged()
-            .onEach{
+            .onEach {
                 viewmodel.getMovieByName(it)
             }
             .launchIn(lifecycleScope)
+        checkDataVisibility()
     }
 
     private fun getData() {
         lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED){
-                viewmodel.searchUiState.collectLatest{
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewmodel.searchUiState.collectLatest {
                     adapter.submitData(it)
                 }
             }
         }
     }
 
-    companion object{
+    private fun checkDataVisibility() {
+        lifecycleScope.launch {
+            adapter.loadStateFlow.collectLatest { loadStates ->
+                val isListEmpty = adapter.itemCount == 0 &&
+                        loadStates.refresh is LoadState.NotLoading &&
+                        loadStates.append.endOfPaginationReached
+
+                if (isListEmpty) {
+                    binding.notFoundImageView.visibility = View.VISIBLE
+                } else {
+                    binding.notFoundImageView.visibility = View.GONE
+                }
+            }
+        }
+    }
+
+    companion object {
         private const val MILLISECONDS = 200L
         private const val MINIMUM_SEARCH_LENGTH = 3
     }

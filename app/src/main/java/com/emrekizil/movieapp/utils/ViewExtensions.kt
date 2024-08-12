@@ -1,11 +1,14 @@
 package com.emrekizil.movieapp.utils
 
 import android.view.LayoutInflater
+import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.viewbinding.ViewBinding
+import coil.load
+import coil.size.Scale
 import com.google.android.material.textfield.TextInputEditText
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -52,5 +55,11 @@ fun TextInputEditText.observeTextChanges(): Flow<String> {
         text?.let {
             (it.toString())
         }
+    }
+}
+
+fun ImageView.loadImage(imageUrl:String){
+    this.load(imageUrl){
+        scale(Scale.FILL)
     }
 }

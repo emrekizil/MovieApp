@@ -41,4 +41,11 @@ abstract class BaseFragment<T : ViewBinding>(factory: (LayoutInflater) -> T) : F
         (activity as MainActivity).showBottomNavigationBar()
     }
 
+    fun hideProgressBar(){
+        (activity as MainActivity).hideProgressBar()
+    }
+
+    fun showProgressBar(){
+        (activity as MainActivity).showProgressBar()
+    }
 }

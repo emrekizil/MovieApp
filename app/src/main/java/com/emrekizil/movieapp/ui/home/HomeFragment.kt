@@ -1,18 +1,15 @@
-package com.emrekizil.movieapp.ui.popular
+package com.emrekizil.movieapp.ui.home
 
 import androidx.fragment.app.viewModels
 import android.os.Bundle
 import android.os.Parcelable
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.emrekizil.movieapp.MainActivity
+import com.emrekizil.movieapp.R
 import com.emrekizil.movieapp.databinding.FragmentHomeBinding
 import com.emrekizil.movieapp.ui.base.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
@@ -30,20 +27,18 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
 
     private var layoutManagerState: Parcelable? = null
 
+    private var isGridMode = false
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setUpAdapter()
         getData()
-        binding.toggleButton.setOnCheckedChangeListener { _, isChecked ->
-            layoutManagerState = binding.recyclerView.layoutManager?.onSaveInstanceState()
-            if (isChecked) {
-                binding.recyclerView.layoutManager = GridLayoutManager(context, 2)
-                adapter.setGridMode(true)
-            } else {
-                binding.recyclerView.layoutManager = LinearLayoutManager(context)
-                adapter.setGridMode(false)
-            }
-            binding.recyclerView.layoutManager?.onRestoreInstanceState(layoutManagerState)
+        viewModel.getLayoutPreference()
+
+        binding.layoutManagerButton.setOnClickListener {
+            isGridMode = !isGridMode
+            viewModel.saveLayoutPreference(isGridMode)
+            viewModel.getLayoutPreference()
         }
         showBottomNavigationBar()
     }
@@ -53,6 +48,25 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.homeUiState.collectLatest {
                     adapter.submitData(it)
+                }
+            }
+        }
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.layoutPreference.collect { isGridManager ->
+                    isGridMode = isGridManager
+                    layoutManagerState = binding.recyclerView.layoutManager?.onSaveInstanceState()
+                    if (isGridManager){
+                        binding.recyclerView.layoutManager = GridLayoutManager(context, 2)
+                        adapter.setGridMode(true)
+                        binding.layoutManagerButton.setImageResource(R.drawable.icon_grid_layout)
+                    } else {
+                        binding.recyclerView.layoutManager = LinearLayoutManager(context)
+                        adapter.setGridMode(false)
+                        binding.layoutManagerButton.setImageResource(R.drawable.icon_linear_layout)
+                    }
+                    binding.recyclerView.layoutManager?.onRestoreInstanceState(layoutManagerState)
                 }
             }
         }

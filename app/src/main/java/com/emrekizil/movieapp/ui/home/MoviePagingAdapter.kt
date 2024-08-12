@@ -1,4 +1,4 @@
-package com.emrekizil.movieapp.ui.popular
+package com.emrekizil.movieapp.ui.home
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

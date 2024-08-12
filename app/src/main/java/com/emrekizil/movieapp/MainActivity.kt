@@ -18,17 +18,26 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         navController = navHostFragment.navController
         val bottomNavigation = findViewById<BottomNavigationView>(R.id.bottom_navigation)
         bottomNavigation.setupWithNavController(navController)
     }
 
-    fun hideBottomNavigationBar(){
+    fun hideBottomNavigationBar() {
         binding.bottomNavigation.visibility = View.GONE
     }
 
-    fun showBottomNavigationBar(){
+    fun showBottomNavigationBar() {
         binding.bottomNavigation.visibility = View.VISIBLE
+    }
+
+    fun showProgressBar() {
+        binding.progressBar.visibility = View.VISIBLE
+    }
+
+    fun hideProgressBar() {
+        binding.progressBar.visibility = View.GONE
     }
 }

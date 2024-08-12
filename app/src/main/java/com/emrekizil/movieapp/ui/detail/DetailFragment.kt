@@ -1,12 +1,6 @@
 package com.emrekizil.movieapp.ui.detail
 
 import androidx.fragment.app.viewModels
-import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -14,8 +8,8 @@ import androidx.navigation.fragment.navArgs
 import com.emrekizil.movieapp.R
 import com.emrekizil.movieapp.databinding.FragmentDetailBinding
 import com.emrekizil.movieapp.ui.base.BaseFragment
+import com.emrekizil.movieapp.utils.loadImage
 import dagger.hilt.android.AndroidEntryPoint
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -23,29 +17,44 @@ import kotlinx.coroutines.launch
 class DetailFragment : BaseFragment<FragmentDetailBinding>(FragmentDetailBinding::inflate) {
 
     private val viewModel: DetailViewModel by viewModels()
-    private val safeArgs:DetailFragmentArgs by navArgs()
+    private val safeArgs: DetailFragmentArgs by navArgs()
     override fun observeUi() {
         super.observeUi()
         hideBottomNavigationBar()
-
         viewModel.getMovie(safeArgs.id)
-
         lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED){
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.detailUiState.collectLatest {
-                    when(it){
-                        is MovieUiState.Error -> {
-                            println(it.message)
+                    when (it) {
+                        is MovieDetailScreenUiState.Error -> {
+                            hideProgressBar()
                         }
-                        MovieUiState.Loading -> {
-                            println(it)
+
+                        MovieDetailScreenUiState.Loading -> {
+                            showProgressBar()
                         }
-                        is MovieUiState.Success -> {
-                            Log.d("mylovedata","$it.data")
+
+                        is MovieDetailScreenUiState.Success -> {
+                            hideProgressBar()
+                            setUi(it.data)
                         }
                     }
                 }
             }
+        }
+    }
+
+    private fun setUi(data: MovieUiState) {
+        with(binding){
+            movieDetailImageView.loadImage(data.backdropPath)
+            voteTextView.text = data.voteAverage.toString()
+            movieTitle.text = data.title
+            releaseDateTextView.text = data.releaseDate
+            movieOverview.text = data.overview
+            favoriteButton.setOnClickListener {
+                data.onFavorite.invoke()
+            }
+            favoriteButton.setImageResource(if (data.isFavorite) R.drawable.icon_delete_favorite else R.drawable.icon_add_favorite)
         }
     }
 }
