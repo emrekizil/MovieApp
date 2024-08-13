@@ -104,7 +104,7 @@ data class MovieUiState(
 ) {
     fun toMovieDetail() : MovieDetail {
         return MovieDetail(
-            this.id ,
+            this.id,
             this.overview ,
             this.backdropPath ,
             this.genres,
