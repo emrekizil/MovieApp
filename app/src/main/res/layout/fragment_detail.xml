@@ -1,18 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/app_background"
     android:orientation="vertical"
     tools:context=".ui.detail.DetailFragment">
+
+    <ImageView
+        android:id="@+id/something_wrong_image_view"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="300dp"
+        android:layout_gravity="center_horizontal"
+        android:src="@drawable/something_went_wrong"/>
+
+    <TextView
+        android:id="@+id/something_wrong_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/open_sans_bold"
+        android:text="@string/something_went_wrong"
+        android:textColor="@color/red"
+        android:layout_marginTop="16dp"
+        android:layout_gravity="center_horizontal"
+        android:textSize="18sp"
+        />
+
     <ScrollView
+        android:id="@+id/scroll_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
             <ImageView
                 android:id="@+id/movie_detail_image_view"
                 android:layout_width="match_parent"
@@ -21,36 +46,40 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginHorizontal="16dp">
+                android:layout_marginHorizontal="16dp"
+                android:orientation="horizontal">
 
                 <TextView
                     android:id="@+id/movie_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/open_sans_bold"
                     android:textColor="@color/white"
-                    android:textSize="18sp"
-                    android:layout_weight="1"/>
+                    android:textSize="24sp" />
+
                 <ImageButton
                     android:id="@+id/favorite_button"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
+                    android:layout_gravity="center"
                     android:backgroundTint="@color/app_background"
-                    android:src="@drawable/icon_add_favorite"
-                    android:layout_gravity=""/>
+                    android:src="@drawable/icon_add_favorite" />
 
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginHorizontal="16dp">
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="4dp"
+                android:orientation="horizontal">
 
                 <ImageView
                     android:layout_width="24dp"
                     android:layout_height="24dp"
-                    android:src="@drawable/icon_star" />
+                    android:src="@drawable/icon_star"
+                    android:layout_gravity="center"/>
 
                 <TextView
                     android:id="@+id/vote_text_view"
@@ -58,6 +87,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_marginStart="8dp"
+                    android:fontFamily="@font/open_sans_medium"
                     android:textColor="@color/red" />
 
                 <TextView
@@ -65,15 +95,64 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginStart="16dp" />
+                    android:layout_marginStart="16dp"
+                    android:fontFamily="@font/open_sans_medium"
+                    android:textColor="@color/red" />
+
+                <TextView
+                    android:id="@+id/movie_genre_first"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:background="@drawable/textview_border"
+                    android:fontFamily="@font/open_sans_medium"
+                    android:gravity="center"
+                    android:padding="6dp"
+                    android:textColor="@color/red" />
+
+                <TextView
+                    android:id="@+id/movie_genre_second"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:background="@drawable/textview_border"
+                    android:fontFamily="@font/open_sans_medium"
+                    android:gravity="center"
+                    android:padding="6dp"
+                    android:textColor="@color/red" />
             </LinearLayout>
 
             <TextView
                 android:id="@+id/movie_overview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:fontFamily="@font/open_sans_medium"
                 android:textColor="@color/white"
-                android:layout_marginHorizontal="16dp"/>
+                android:textSize="15sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/similar_movies"
+                android:fontFamily="@font/open_sans_bold"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginStart="16dp"/>
+            <com.emrekizil.movieapp.ui.component.MovieSimilarUiComponent
+                android:id="@+id/similar_movie_one"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+            <com.emrekizil.movieapp.ui.component.MovieSimilarUiComponent
+                android:id="@+id/similar_movie_second"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+            <com.emrekizil.movieapp.ui.component.MovieSimilarUiComponent
+                android:id="@+id/similar_movie_third"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
         </LinearLayout>
     </ScrollView>
 

@@ -1,6 +1,6 @@
 package com.emrekizil.movieapp.data.source.local
 
-import com.emrekizil.movieapp.data.database.FavoriteMovieEntity
+import com.emrekizil.movieapp.data.database.entity.FavoriteMovieEntity
 import com.emrekizil.movieapp.data.database.MovieDao
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject

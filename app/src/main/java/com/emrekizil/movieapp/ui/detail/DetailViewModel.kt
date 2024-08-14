@@ -4,13 +4,19 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.emrekizil.movieapp.data.ResponseState
 import com.emrekizil.movieapp.data.dto.detail.MovieDetailResponse
-import com.emrekizil.movieapp.data.repository.MovieDetail
-import com.emrekizil.movieapp.data.repository.MovieRepository
+import com.emrekizil.movieapp.data.repository.model.Movie
+import com.emrekizil.movieapp.data.repository.model.MovieDetail
+import com.emrekizil.movieapp.domain.DeleteMovieUseCase
+import com.emrekizil.movieapp.domain.GetFavoriteMovieUseCase
+import com.emrekizil.movieapp.domain.GetMovieDetailByIdUseCase
+import com.emrekizil.movieapp.domain.GetSimilarMovieByIdUseCase
+import com.emrekizil.movieapp.domain.InsertMovieUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -18,18 +24,25 @@ import javax.inject.Inject
 
 @HiltViewModel
 class DetailViewModel @Inject constructor(
-    private val repository: MovieRepository
+    private val getSimilarMovieByIdUseCase: GetSimilarMovieByIdUseCase,
+    private val getMovieDetailByIdUseCase: GetMovieDetailByIdUseCase,
+    private val getFavoriteMovieUseCase: GetFavoriteMovieUseCase,
+    private val insertMovieUseCase: InsertMovieUseCase,
+    private val deleteMovieUseCase: DeleteMovieUseCase
 ) : ViewModel() {
     private val _detailUiState: MutableStateFlow<MovieDetailScreenUiState> =
         MutableStateFlow(MovieDetailScreenUiState.Loading)
     val detailUiState: StateFlow<MovieDetailScreenUiState> = _detailUiState.asStateFlow()
 
+    private val _similarMovieUiState : MutableStateFlow<List<Movie>> = MutableStateFlow(emptyList())
+    val similarMovieUiState = _similarMovieUiState.asStateFlow()
+
 
     fun getMovie(movieId: Int) {
         viewModelScope.launch {
             combine(
-                repository.getMovieDetailById(movieId),
-                repository.getFavoriteMovies()
+                getMovieDetailByIdUseCase(movieId),
+                getFavoriteMovieUseCase()
             ) { movieResponseState, favoriteMovies ->
                 when (movieResponseState) {
                     is ResponseState.Error -> {
@@ -73,13 +86,27 @@ class DetailViewModel @Inject constructor(
             }.collect()
         }
     }
-
+    fun getSimilarMovie(movieId: Int) {
+        viewModelScope.launch {
+            getSimilarMovieByIdUseCase(movieId).collectLatest { response->
+                when (response) {
+                    is ResponseState.Success -> {
+                        _similarMovieUiState.update {
+                            response.data
+                        }
+                    }
+                    is ResponseState.Error -> {}
+                    is ResponseState.Loading -> {}
+                }
+            }
+        }
+    }
     private fun changeFavoriteMovieState(data: MovieDetailResponse, favorite: Boolean) {
         viewModelScope.launch {
             if (favorite){
-                repository.deleteMovie(data.toMovieDetail())
+                deleteMovieUseCase(data.toMovieDetail())
             } else {
-                repository.insertMovie(data.toMovieDetail())
+                insertMovieUseCase(data.toMovieDetail())
             }
         }
     }
@@ -101,16 +128,4 @@ data class MovieUiState(
     val releaseDate: String,
     val isFavorite: Boolean,
     val onFavorite: () -> Unit
-) {
-    fun toMovieDetail() : MovieDetail {
-        return MovieDetail(
-            this.id,
-            this.overview ,
-            this.backdropPath ,
-            this.genres,
-            this.voteAverage ,
-            this.title,
-            this.releaseDate
-        )
-    }
-}
+)

@@ -3,7 +3,6 @@ package com.emrekizil.movieapp.data.dto.popular
 
 import com.google.gson.annotations.SerializedName
 import kotlin.math.round
-import kotlin.math.roundToLong
 
 data class Result(
     @SerializedName("adult")
@@ -43,5 +42,9 @@ data class Result(
         return this.voteAverage?.let {
             round(it.times(10)) / 10
         } ?: 0.0
+    }
+
+    fun getBackdropImageUrl(): String {
+        return "https://image.tmdb.org/t/p/w400/${this.backdropPath}"
     }
 }

@@ -6,7 +6,6 @@ import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStoreFile
 import androidx.room.Room
-import androidx.room.RoomDatabase
 import com.emrekizil.movieapp.data.database.MovieDao
 import com.emrekizil.movieapp.data.database.MovieDatabase
 import dagger.Module

@@ -1,17 +1,11 @@
 package com.emrekizil.movieapp.ui.search
 
-import android.os.Bundle
-import android.util.Log
-import android.view.View
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.paging.LoadState
-import androidx.paging.PagingData
-import androidx.paging.filter
-import androidx.paging.map
-import com.emrekizil.movieapp.data.repository.Movie
+import com.emrekizil.movieapp.R
 import com.emrekizil.movieapp.databinding.FragmentSearchBinding
 import com.emrekizil.movieapp.ui.base.BaseFragment
 import com.emrekizil.movieapp.utils.observeTextChanges
@@ -37,12 +31,11 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(FragmentSearchBinding
         }
     }
 
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun observeUi() {
+        super.observeUi()
         showBottomNavigationBar()
         binding.searchRecyclerView.adapter = adapter
-        getData()
+        getUiState()
         binding.searchEditText.observeTextChanges()
             .filter { it okWith MINIMUM_SEARCH_LENGTH }
             .debounce(MILLISECONDS)
@@ -54,7 +47,7 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(FragmentSearchBinding
         checkDataVisibility()
     }
 
-    private fun getData() {
+    private fun getUiState() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewmodel.searchUiState.collectLatest {
@@ -72,9 +65,7 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(FragmentSearchBinding
                         loadStates.append.endOfPaginationReached
 
                 if (isListEmpty) {
-                    binding.notFoundImageView.visibility = View.VISIBLE
-                } else {
-                    binding.notFoundImageView.visibility = View.GONE
+                    showSnackbar(getString(R.string.not_found),null,null)
                 }
             }
         }

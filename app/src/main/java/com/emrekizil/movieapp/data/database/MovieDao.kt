@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
+import com.emrekizil.movieapp.data.database.entity.FavoriteMovieEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao

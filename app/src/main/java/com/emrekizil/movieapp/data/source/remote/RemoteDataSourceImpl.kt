@@ -16,4 +16,7 @@ class RemoteDataSourceImpl @Inject constructor(private val movieApi: MovieApi) :
     override suspend fun getMovieDetailById(movieId: Int): Response<MovieDetailResponse> =
         movieApi.getMovieDetailById(movieId)
 
+    override suspend fun getSimilarMovieById(movieId: Int): Response<MovieResponse> =
+        movieApi.getSimilarMovieById(movieId)
+
 }

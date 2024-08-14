@@ -5,7 +5,9 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.emrekizil.movieapp.data.ResponseState
 import com.emrekizil.movieapp.data.dto.detail.MovieDetailResponse
-import com.emrekizil.movieapp.data.dto.popular.Result
+import com.emrekizil.movieapp.data.repository.mapper.toMovieList
+import com.emrekizil.movieapp.data.repository.model.Movie
+import com.emrekizil.movieapp.data.repository.model.MovieDetail
 import com.emrekizil.movieapp.data.source.local.LocalDataSource
 import com.emrekizil.movieapp.data.source.paging.MoviePagingSource
 import com.emrekizil.movieapp.data.source.paging.SearchMoviePagingSource
@@ -21,13 +23,14 @@ class MovieRepositoryImpl @Inject constructor(
     private val localDataSource: LocalDataSource
 ) :
     MovieRepository {
-    override fun getPopularMovie(pageNumber: Int): Flow<PagingData<Result>> {
+    override fun getPopularMovie(pageNumber: Int): Flow<PagingData<Movie>> {
         return Pager(
             config = PagingConfig(20),
         ) {
             MoviePagingSource(remoteDataSource)
         }
             .flow
+
     }
 
     override fun getMovieByName(pageNumber: Int, query: String): Flow<PagingData<Movie>> {
@@ -61,6 +64,16 @@ class MovieRepositoryImpl @Inject constructor(
         localDataSource.getFavoriteMovies().map {
             it.map { entity -> entity.toMovieDetail() }
         }
+
+    override fun getSimilarMovieById(movieId: Int): Flow<ResponseState<List<Movie>>> {
+        return flow {
+            emit(ResponseState.Loading)
+            val response = remoteDataSource.getSimilarMovieById(movieId).toMovieList().take(3)
+            emit(ResponseState.Success(response))
+        }.catch {
+            emit(ResponseState.Error(it.message.orEmpty()))
+        }
+    }
 
     override suspend fun saveLayoutPreference(isGridMode: Boolean) {
         localDataSource.saveLayoutPreference(isGridMode)

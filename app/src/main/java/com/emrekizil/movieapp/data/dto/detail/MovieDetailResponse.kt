@@ -1,7 +1,7 @@
 package com.emrekizil.movieapp.data.dto.detail
 
 
-import com.emrekizil.movieapp.data.repository.MovieDetail
+import com.emrekizil.movieapp.data.repository.model.MovieDetail
 import com.google.gson.annotations.SerializedName
 import kotlin.math.round
 
@@ -63,6 +63,10 @@ data class MovieDetailResponse(
         return "https://image.tmdb.org/t/p/original${this.backdropPath}"
     }
 
+    private fun getBackdropPathImageUrl():String {
+        return "https://image.tmdb.org/t/p/w400${this.backdropPath}"
+    }
+
     fun getRatingRounded(): Double {
         return this.voteAverage?.let {
             round(it.times(10)) / 10
@@ -73,11 +77,11 @@ data class MovieDetailResponse(
         return MovieDetail(
             this.id ?: 0,
             this.overview ?: "",
-            this.backdropPath ?: "",
+            getBackdropPathImageUrl(),
             this.genres?.map {
                 it?.name!!
             } ?: listOf(""),
-            this.voteAverage ?: 0.0,
+            getRatingRounded(),
             this.title ?: "",
             this.releaseDate ?:""
         )

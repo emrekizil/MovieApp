@@ -2,8 +2,9 @@ package com.emrekizil.movieapp.data.source.paging
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.emrekizil.movieapp.data.repository.Movie
-import com.emrekizil.movieapp.data.repository.toMovie
+import com.emrekizil.movieapp.data.repository.model.Movie
+import com.emrekizil.movieapp.data.repository.mapper.mapTo
+import com.emrekizil.movieapp.data.repository.mapper.toMovieList
 import com.emrekizil.movieapp.data.source.remote.RemoteDataSource
 
 
@@ -15,9 +16,8 @@ class SearchMoviePagingSource(
         return try {
             val page = params.key ?: 1
             val response = remoteDataSource.getMovieByName(page,query)
-            val result = response.body()?.results ?: emptyList()
-            val movie = result.map {
-                it!!.toMovie()
+            val movie = response.mapTo {
+                it.toMovieList()
             }
             LoadResult.Page(
                 data = movie,

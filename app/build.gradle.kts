@@ -95,6 +95,8 @@ dependencies {
 
     //DataStore
     implementation (libs.androidx.datastore.preferences)
+
+    implementation("androidx.core:core-splashscreen:1.2.0-alpha01")
     
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

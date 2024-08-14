@@ -3,7 +3,6 @@ package com.emrekizil.movieapp.utils
 import android.view.LayoutInflater
 import android.widget.EditText
 import android.widget.ImageView
-import android.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.Lifecycle
@@ -11,7 +10,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.viewbinding.ViewBinding
 import coil.load
 import coil.size.Scale
-import com.google.android.material.search.SearchBar
+import com.emrekizil.movieapp.R
 import com.google.android.material.textfield.TextInputEditText
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -84,5 +83,6 @@ fun EditText.observeTextChanges(): Flow<String> {
 fun ImageView.loadImage(imageUrl:String){
     this.load(imageUrl){
         scale(Scale.FILL)
+        placeholder(R.drawable.icon_placholder)
     }
 }

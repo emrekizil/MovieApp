@@ -27,4 +27,10 @@ interface MovieApi {
         @Path("movieId") movieId: Int,
         @Query("api_key") apiKey: String = BuildConfig.API_KEY
     ) : Response<MovieDetailResponse>
+
+    @GET("/3/movie/{movieId}/similar")
+    suspend fun getSimilarMovieById(
+        @Path("movieId") movieId: Int,
+        @Query("api_key") apiKey: String = BuildConfig.API_KEY
+    ) : Response<MovieResponse>
 }

@@ -48,4 +48,13 @@ abstract class BaseFragment<T : ViewBinding>(factory: (LayoutInflater) -> T) : F
     fun showProgressBar(){
         (activity as MainActivity).showProgressBar()
     }
+
+    fun showSnackbar(snackBarText: String, actionName: String?, action: (() -> Unit)?){
+        (activity as MainActivity).showSnackBar(snackBarText, actionName, action)
+    }
+
+    fun setOnNetworkAvailableCall(networkCall: () -> Unit) {
+        (activity as MainActivity).setOnNetworkAvailableCall(networkCall)
+    }
+
 }

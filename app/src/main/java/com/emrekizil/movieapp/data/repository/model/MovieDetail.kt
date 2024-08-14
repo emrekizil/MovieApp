@@ -1,22 +1,18 @@
-package com.emrekizil.movieapp.data.database
+package com.emrekizil.movieapp.data.repository.model
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-import com.emrekizil.movieapp.data.repository.MovieDetail
+import com.emrekizil.movieapp.data.database.entity.FavoriteMovieEntity
 
-@Entity
-data class FavoriteMovieEntity(
-    @PrimaryKey(autoGenerate = false)
+data class MovieDetail(
     val id: Int,
     val overview: String,
     val backdropPath: String,
     val genres: List<String>,
     val voteAverage: Double,
     val title: String,
-    val releaseDate: String,
+    val releaseDate: String
 ) {
-    fun toMovieDetail() : MovieDetail {
-        return MovieDetail(
+    fun toEntity() : FavoriteMovieEntity {
+        return FavoriteMovieEntity(
             this.id,
             this.overview,
             this.backdropPath,

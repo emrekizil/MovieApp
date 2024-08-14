@@ -1,12 +1,11 @@
 package com.emrekizil.movieapp.ui.home
 
-import android.os.Bundle
 import android.os.Parcelable
-import android.view.View
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.emrekizil.movieapp.R
@@ -29,13 +28,14 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
 
     private val viewModel: HomeViewModel by viewModels()
 
-    private val adapter = MoviePagingAdapter { result ->
-        navigateToDetailFragment(result)
+    private val adapter = MoviePagingAdapter { movieId ->
+        val action = HomeFragmentDirections.actionHomeFragmentToDetailFragment(movieId)
+        navigate(action)
     }
 
     private val searchAdapter = SearchPagingAdapter().apply {
-        setOnMovieItemClickListener {
-            val action = HomeFragmentDirections.actionHomeFragmentToDetailFragment(it)
+        setOnMovieItemClickListener { movieId ->
+            val action = HomeFragmentDirections.actionHomeFragmentToDetailFragment(movieId)
             navigate(action)
         }
     }
@@ -44,12 +44,11 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
 
     private var isGridMode = false
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun observeUi() {
+        super.observeUi()
         setUpAdapter()
-        getData()
+        getUiState()
         viewModel.getLayoutPreference()
-
         binding.layoutManagerButton.setOnClickListener {
             isGridMode = !isGridMode
             viewModel.saveLayoutPreference(isGridMode)
@@ -67,7 +66,9 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
         showBottomNavigationBar()
     }
 
-    private fun getData() {
+
+    private fun getUiState() {
+
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.homeUiState.collectLatest {
@@ -89,7 +90,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
                 viewModel.layoutPreference.collect { isGridManager ->
                     isGridMode = isGridManager
                     layoutManagerState = binding.recyclerView.layoutManager?.onSaveInstanceState()
-                    if (isGridManager){
+                    if (isGridManager) {
                         binding.recyclerView.layoutManager = GridLayoutManager(context, 2)
                         adapter.setGridMode(true)
                         binding.layoutManagerButton.setImageResource(R.drawable.icon_grid_layout)
@@ -102,15 +103,41 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
                 }
             }
         }
+
+        lifecycleScope.launch {
+            adapter.loadStateFlow.collectLatest { loadStates ->
+                if (loadStates.refresh is LoadState.Loading || loadStates.append is LoadState.Loading) {
+                    showProgressBar()
+                } else {
+                    hideProgressBar()
+                }
+                if (loadStates.refresh is LoadState.Error || loadStates.append is LoadState.Error) {
+                    hideProgressBar()
+                }
+            }
+        }
+
+        lifecycleScope.launch {
+            searchAdapter.loadStateFlow.collectLatest { loadStates->
+                if (loadStates.refresh is LoadState.Error) {
+                    showSnackbar(getString(R.string.something_went_wrong),null,null)
+                }
+                val isListEmpty = searchAdapter.itemCount == 0 &&
+                        loadStates.refresh is LoadState.NotLoading &&
+                        loadStates.append.endOfPaginationReached
+                if (isListEmpty) {
+                    showSnackbar(getString(R.string.not_found),null,null)
+                }
+            }
+        }
+
+        setOnNetworkAvailableCall {
+            viewModel.getPopularMovie()
+        }
     }
 
     private fun setUpAdapter() {
         binding.recyclerView.adapter = adapter
-    }
-
-    private fun navigateToDetailFragment(movieId: Int) {
-        val action = HomeFragmentDirections.actionHomeFragmentToDetailFragment(movieId)
-        navigate(action)
     }
 
     companion object {

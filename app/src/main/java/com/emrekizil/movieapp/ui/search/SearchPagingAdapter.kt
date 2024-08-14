@@ -5,12 +5,10 @@ import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import coil.load
-import com.emrekizil.movieapp.data.dto.popular.Result
-import com.emrekizil.movieapp.data.repository.Movie
 import com.emrekizil.movieapp.databinding.ItemMovieGridBinding
+import com.emrekizil.movieapp.ui.component.BaseMovieUiState
 
-class SearchPagingAdapter : PagingDataAdapter<Movie, SearchPagingAdapter.SearchViewHolder>(MovieDiffCallback()) {
+class SearchPagingAdapter : PagingDataAdapter<BaseMovieUiState, SearchPagingAdapter.SearchViewHolder>(MovieDiffCallback()) {
 
     private var onMovieItemClickListener:((Int)->Unit)? = null
 
@@ -20,13 +18,12 @@ class SearchPagingAdapter : PagingDataAdapter<Movie, SearchPagingAdapter.SearchV
 
     class SearchViewHolder(private val binding: ItemMovieGridBinding, private val onMovieItemClickListener: ((Int) -> Unit)?) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: Movie?) {
-            binding.movieImageView.load(
-                item?.posterPath
-            )
-            binding.movieScore.text = item?.voteAverage.toString()
+        fun bind(item: BaseMovieUiState?) {
             binding.root.setOnClickListener {
                 onMovieItemClickListener?.invoke(item!!.id)
+            }
+            if (item != null) {
+                binding.gridComponent.setMovieData(item)
             }
         }
     }
@@ -45,12 +42,12 @@ class SearchPagingAdapter : PagingDataAdapter<Movie, SearchPagingAdapter.SearchV
         return SearchViewHolder(binding,onMovieItemClickListener)
     }
 
-    private class MovieDiffCallback : DiffUtil.ItemCallback<Movie>() {
-        override fun areItemsTheSame(oldItem: Movie, newItem: Movie): Boolean {
+    private class MovieDiffCallback : DiffUtil.ItemCallback<BaseMovieUiState>() {
+        override fun areItemsTheSame(oldItem: BaseMovieUiState, newItem: BaseMovieUiState): Boolean {
             return oldItem.id == newItem.id
         }
 
-        override fun areContentsTheSame(oldItem: Movie, newItem: Movie): Boolean {
+        override fun areContentsTheSame(oldItem: BaseMovieUiState, newItem: BaseMovieUiState): Boolean {
             return oldItem == newItem
         }
     }

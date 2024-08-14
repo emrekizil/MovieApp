@@ -3,11 +3,12 @@ package com.emrekizil.movieapp.ui.favorite
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.emrekizil.movieapp.data.repository.MovieDetail
-import com.emrekizil.movieapp.databinding.ItemMovieLinearBinding
+import com.emrekizil.movieapp.data.repository.model.MovieDetail
+import com.emrekizil.movieapp.databinding.LayoutMovieLinearBinding
 import com.emrekizil.movieapp.utils.loadImage
 
 class FavoriteMovieAdapter : RecyclerView.Adapter<FavoriteMovieAdapter.FavoriteMovieViewHolder>() {
+
     private var onMovieItemClickListener: ((Int) -> Unit)? = null
 
     fun setOnMovieItemClickListener(onMovieItemClickListener: ((Int) -> Unit)?) {
@@ -25,23 +26,25 @@ class FavoriteMovieAdapter : RecyclerView.Adapter<FavoriteMovieAdapter.FavoriteM
     }
 
     class FavoriteMovieViewHolder(
-        private val binding: ItemMovieLinearBinding,
+        private val binding: LayoutMovieLinearBinding,
         private val onMovieItemClickListener: ((Int) -> Unit)?
     ) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(item: MovieDetail) {
-            binding.movieImageView.loadImage("https://image.tmdb.org/t/p/w400/${item.backdropPath}" )
-            binding.movieScore.text = item.voteAverage.toString()
-            binding.movieTitle.text = item.title
-            binding.root.setOnClickListener {
-                onMovieItemClickListener?.invoke(item.id)
+            with(binding){
+                movieImageView.loadImage(item.backdropPath)
+                movieScore.text = item.voteAverage.toString()
+                movieTitle.text = item.title
+                root.setOnClickListener {
+                    onMovieItemClickListener?.invoke(item.id)
+                }
             }
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FavoriteMovieViewHolder {
         val binding =
-            ItemMovieLinearBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            LayoutMovieLinearBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return FavoriteMovieViewHolder(binding, onMovieItemClickListener)
     }
 
@@ -51,4 +54,6 @@ class FavoriteMovieAdapter : RecyclerView.Adapter<FavoriteMovieAdapter.FavoriteM
         val item = items[position]
         holder.bind(item)
     }
+
+    fun getItem(position: Int) = items[position]
 }

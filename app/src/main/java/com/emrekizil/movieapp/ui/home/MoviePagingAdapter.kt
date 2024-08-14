@@ -5,15 +5,13 @@ import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import coil.load
-import coil.size.Scale
-import com.emrekizil.movieapp.data.dto.popular.Result
 import com.emrekizil.movieapp.databinding.ItemMovieGridBinding
 import com.emrekizil.movieapp.databinding.ItemMovieLinearBinding
+import com.emrekizil.movieapp.ui.component.BaseMovieUiState
 
 class MoviePagingAdapter(
     private val onClick: (Int) -> Unit
-) : PagingDataAdapter<Result, RecyclerView.ViewHolder>(MovieDiffCallback()) {
+) : PagingDataAdapter<BaseMovieUiState, RecyclerView.ViewHolder>(MovieDiffCallback()) {
 
     private var isGridMode = false
 
@@ -55,35 +53,24 @@ class MoviePagingAdapter(
 
     class LinearViewHolder(private val binding: ItemMovieLinearBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(movie: Result) {
-            binding.movieTitle.text = movie.title
-            binding.movieImageView.load(
-                movie.getPosterImageUrl()
-            ) {
-                scale(Scale.FILL)
-            }
-            binding.movieScore.text = movie.voteAverage.toString()
+        fun bind(movie: BaseMovieUiState) {
+            binding.linearComponent.setMovieData(movie)
         }
     }
 
     class GridViewHolder(private val binding: ItemMovieGridBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(movie: Result) {
-            binding.movieImageView.load(
-                movie.getPosterImageUrl()
-            ) {
-                scale(Scale.FILL)
-            }
-            binding.movieScore.text = movie.getRatingRounded().toString()
+        fun bind(movie: BaseMovieUiState) {
+            binding.gridComponent.setMovieData(movie)
         }
     }
 
-    private class MovieDiffCallback : DiffUtil.ItemCallback<Result>() {
-        override fun areItemsTheSame(oldItem: Result, newItem: Result): Boolean {
+    private class MovieDiffCallback : DiffUtil.ItemCallback<BaseMovieUiState>() {
+        override fun areItemsTheSame(oldItem: BaseMovieUiState, newItem: BaseMovieUiState): Boolean {
             return oldItem.id == newItem.id
         }
 
-        override fun areContentsTheSame(oldItem: Result, newItem: Result): Boolean {
+        override fun areContentsTheSame(oldItem: BaseMovieUiState, newItem: BaseMovieUiState): Boolean {
             return oldItem == newItem
         }
     }
