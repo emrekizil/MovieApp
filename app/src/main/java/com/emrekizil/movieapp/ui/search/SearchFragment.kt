@@ -64,7 +64,7 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(FragmentSearchBinding
                         loadStates.refresh is LoadState.NotLoading &&
                         loadStates.append.endOfPaginationReached
 
-                if (isListEmpty) {
+                if (isListEmpty && binding.searchEditText.isFocused) {
                     showSnackbar(getString(R.string.not_found),null,null)
                 }
             }

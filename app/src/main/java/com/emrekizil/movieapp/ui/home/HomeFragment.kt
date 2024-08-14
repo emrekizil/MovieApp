@@ -119,13 +119,13 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
 
         lifecycleScope.launch {
             searchAdapter.loadStateFlow.collectLatest { loadStates->
-                if (loadStates.refresh is LoadState.Error) {
+                if (loadStates.refresh is LoadState.Error && binding.searchView.editText.isShown) {
                     showSnackbar(getString(R.string.something_went_wrong),null,null)
                 }
                 val isListEmpty = searchAdapter.itemCount == 0 &&
                         loadStates.refresh is LoadState.NotLoading &&
                         loadStates.append.endOfPaginationReached
-                if (isListEmpty) {
+                if (isListEmpty && binding.searchView.editText.isShown) {
                     showSnackbar(getString(R.string.not_found),null,null)
                 }
             }
