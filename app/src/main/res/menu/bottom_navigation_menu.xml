@@ -15,4 +15,10 @@
         android:enabled="true"
         android:icon="@drawable/favorite_selector"
         android:title="@string/favorite"/>
+
+    <item
+        android:id="@+id/chatFragment"
+        android:enabled="true"
+        android:icon="@drawable/chat_selector"
+        android:title="@string/chat"/>
 </menu>

@@ -25,6 +25,7 @@ android {
         versionName = "1.0"
 
         buildConfigField("String", "API_KEY", properties.getProperty("API_KEY"))
+        buildConfigField("String", "GEMINI_API_KEY", properties.getProperty("GEMINI_API_KEY"))
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
@@ -43,6 +44,7 @@ android {
     buildFeatures {
         viewBinding = true
         buildConfig = true
+        compose = true
     }
 
     compileOptions {
@@ -53,6 +55,11 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.0"
+    }
+
 }
 
 dependencies {
@@ -96,7 +103,16 @@ dependencies {
     //DataStore
     implementation (libs.androidx.datastore.preferences)
 
+    //Splash
     implementation("androidx.core:core-splashscreen:1.2.0-alpha01")
+
+    //Compose
+    implementation("androidx.activity:activity-compose:1.8.1")
+    implementation(platform("androidx.compose:compose-bom:2023.03.00"))
+    implementation("androidx.compose.ui:ui")
+    implementation("androidx.compose.ui:ui-tooling-preview")
+    implementation("androidx.compose.material3:material3")
+    implementation("com.google.ai.client.generativeai:generativeai:0.7.0")
     
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

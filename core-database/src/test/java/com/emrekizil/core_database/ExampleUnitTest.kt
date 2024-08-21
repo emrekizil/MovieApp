@@ -1,4 +1,4 @@
-package com.emrekizil.movieapp
+package com.emrekizil.core_database
 
 import org.junit.Test
 
