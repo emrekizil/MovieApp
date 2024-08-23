@@ -2,6 +2,10 @@ package com.emrekizil.feature_detail
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.emrekizil.core_domain.DeleteMovieUseCase
+import com.emrekizil.core_domain.GetMovieDetailByIdUseCase
+import com.emrekizil.core_domain.GetSimilarMovieByIdUseCase
+import com.emrekizil.core_domain.InsertMovieUseCase
 import com.emrekizil.core_model.Movie
 import com.emrekizil.core_model.ResponseState
 import com.emrekizil.core_model.dto.detail.MovieDetailResponse
@@ -18,11 +22,11 @@ import javax.inject.Inject
 
 @HiltViewModel
 class DetailViewModel @Inject constructor(
-    private val getSimilarMovieByIdUseCase: com.emrekizil.core_domain.GetSimilarMovieByIdUseCase,
-    private val getMovieDetailByIdUseCase: com.emrekizil.core_domain.GetMovieDetailByIdUseCase,
+    private val getSimilarMovieByIdUseCase: GetSimilarMovieByIdUseCase,
+    private val getMovieDetailByIdUseCase: GetMovieDetailByIdUseCase,
     private val getFavoriteMovieUseCase: com.emrekizil.core_domain.GetFavoriteMovieUseCase,
-    private val insertMovieUseCase: com.emrekizil.core_domain.InsertMovieUseCase,
-    private val deleteMovieUseCase: com.emrekizil.core_domain.DeleteMovieUseCase
+    private val insertMovieUseCase: InsertMovieUseCase,
+    private val deleteMovieUseCase: DeleteMovieUseCase
 ) : ViewModel() {
     private val _detailUiState: MutableStateFlow<MovieDetailScreenUiState> =
         MutableStateFlow(MovieDetailScreenUiState.Loading)

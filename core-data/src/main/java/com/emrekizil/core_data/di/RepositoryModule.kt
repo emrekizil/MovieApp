@@ -1,6 +1,7 @@
 package com.emrekizil.core_data.di
 
-import com.emrekizil.core_domain.MovieRepository
+import com.emrekizil.core_data.MovieRepositoryImpl
+import com.emrekizil.core_domain.repository.MovieRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -13,5 +14,5 @@ abstract class RepositoryModule {
 
     @Binds
     @ViewModelScoped
-    abstract fun bindMovieRepository(movieRepositoryImpl: com.emrekizil.core_data.MovieRepositoryImpl): MovieRepository
+    abstract fun bindMovieRepository(movieRepositoryImpl: MovieRepositoryImpl): MovieRepository
 }

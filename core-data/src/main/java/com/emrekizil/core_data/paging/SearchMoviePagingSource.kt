@@ -4,13 +4,15 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.emrekizil.core_data.mapper.mapTo
 import com.emrekizil.core_data.mapper.toMovieList
+import com.emrekizil.core_model.Movie
+import com.emrekizil.core_network.remote.RemoteDataSource
 
 
 class SearchMoviePagingSource(
-    private val remoteDataSource: com.emrekizil.core_network.remote.RemoteDataSource, private val query: String
-) : PagingSource<Int, com.emrekizil.core_model.Movie>() {
+    private val remoteDataSource: RemoteDataSource, private val query: String
+) : PagingSource<Int, Movie>() {
 
-    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, com.emrekizil.core_model.Movie> {
+    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Movie> {
         return try {
             val page = params.key ?: 1
             val response = remoteDataSource.getMovieByName(page,query)
@@ -27,7 +29,7 @@ class SearchMoviePagingSource(
         }
     }
 
-    override fun getRefreshKey(state: PagingState<Int, com.emrekizil.core_model.Movie>): Int? {
+    override fun getRefreshKey(state: PagingState<Int, Movie>): Int? {
         return state.anchorPosition?.let { anchorPosition ->
             val anchorPage = state.closestPageToPosition(anchorPosition)
             anchorPage?.prevKey?.plus(1) ?: anchorPage?.nextKey?.minus(1)

@@ -7,6 +7,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.navArgs
 import com.emrekizil.core_model.Movie
+import com.emrekizil.core_ui.base.BaseFragment
 import com.emrekizil.core_ui.utils.loadImage
 import com.emrekizil.feature_detail.databinding.FragmentDetailBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -14,7 +15,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class DetailFragment : com.emrekizil.core_ui.base.BaseFragment<FragmentDetailBinding>(FragmentDetailBinding::inflate) {
+class DetailFragment : BaseFragment<FragmentDetailBinding>(FragmentDetailBinding::inflate) {
 
     private val viewModel: DetailViewModel by viewModels()
     private val safeArgs: DetailFragmentArgs by navArgs()

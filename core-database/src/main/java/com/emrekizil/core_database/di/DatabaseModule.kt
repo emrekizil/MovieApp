@@ -6,6 +6,8 @@ import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStoreFile
 import androidx.room.Room
+import com.emrekizil.core_database.database.MovieDao
+import com.emrekizil.core_database.database.MovieDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -23,10 +25,10 @@ object DatabaseModule {
 
     @Provides
     @Singleton
-    fun provideMovieDatabase(@ApplicationContext context: Context): com.emrekizil.core_database.database.MovieDatabase {
+    fun provideMovieDatabase(@ApplicationContext context: Context): MovieDatabase {
         return Room.databaseBuilder(
             context,
-            com.emrekizil.core_database.database.MovieDatabase::class.java,
+            MovieDatabase::class.java,
             "movie_database"
         )
             .fallbackToDestructiveMigration()
@@ -35,7 +37,7 @@ object DatabaseModule {
 
 
     @Provides
-    fun provideMovieDao(movieDatabase: com.emrekizil.core_database.database.MovieDatabase): com.emrekizil.core_database.database.MovieDao = movieDatabase.movieDao()
+    fun provideMovieDao(movieDatabase: MovieDatabase): MovieDao = movieDatabase.movieDao()
 
     @Singleton
     @Provides

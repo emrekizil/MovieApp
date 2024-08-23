@@ -8,7 +8,7 @@ import androidx.paging.map
 import com.emrekizil.core_domain.GetFavoriteMovieUseCase
 import com.emrekizil.core_domain.GetMovieByNameUseCase
 import com.emrekizil.core_domain.GetPopularMovieUseCase
-import com.emrekizil.core_domain.MovieRepository
+import com.emrekizil.core_domain.repository.MovieRepository
 import com.emrekizil.core_ui.component.BaseMovieUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers

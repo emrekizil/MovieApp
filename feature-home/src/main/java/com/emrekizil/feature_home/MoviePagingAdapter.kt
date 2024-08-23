@@ -5,13 +5,14 @@ import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.emrekizil.core_ui.component.BaseMovieUiState
 import com.emrekizil.core_ui.databinding.ItemMovieGridBinding
 import com.emrekizil.core_ui.databinding.ItemMovieLinearBinding
 
 
 class MoviePagingAdapter(
     private val onClick: (Int) -> Unit
-) : PagingDataAdapter<com.emrekizil.core_ui.component.BaseMovieUiState, RecyclerView.ViewHolder>(
+) : PagingDataAdapter<BaseMovieUiState, RecyclerView.ViewHolder>(
     MovieDiffCallback()
 ) {
 
@@ -55,24 +56,24 @@ class MoviePagingAdapter(
 
     class LinearViewHolder(private val binding: ItemMovieLinearBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(movie: com.emrekizil.core_ui.component.BaseMovieUiState) {
+        fun bind(movie: BaseMovieUiState) {
             binding.linearComponent.setMovieData(movie)
         }
     }
 
     class GridViewHolder(private val binding: ItemMovieGridBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(movie: com.emrekizil.core_ui.component.BaseMovieUiState) {
+        fun bind(movie: BaseMovieUiState) {
             binding.gridComponent.setMovieData(movie)
         }
     }
 
-    private class MovieDiffCallback : DiffUtil.ItemCallback<com.emrekizil.core_ui.component.BaseMovieUiState>() {
-        override fun areItemsTheSame(oldItem: com.emrekizil.core_ui.component.BaseMovieUiState, newItem: com.emrekizil.core_ui.component.BaseMovieUiState): Boolean {
+    private class MovieDiffCallback : DiffUtil.ItemCallback<BaseMovieUiState>() {
+        override fun areItemsTheSame(oldItem: BaseMovieUiState, newItem: BaseMovieUiState): Boolean {
             return oldItem.id == newItem.id
         }
 
-        override fun areContentsTheSame(oldItem: com.emrekizil.core_ui.component.BaseMovieUiState, newItem: com.emrekizil.core_ui.component.BaseMovieUiState): Boolean {
+        override fun areContentsTheSame(oldItem: BaseMovieUiState, newItem: BaseMovieUiState): Boolean {
             return oldItem == newItem
         }
     }

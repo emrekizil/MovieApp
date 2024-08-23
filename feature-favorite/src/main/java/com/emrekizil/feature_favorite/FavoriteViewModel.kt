@@ -2,6 +2,9 @@ package com.emrekizil.feature_favorite
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.emrekizil.core_domain.DeleteMovieUseCase
+import com.emrekizil.core_domain.GetFavoriteMovieUseCase
+import com.emrekizil.core_domain.InsertMovieUseCase
 import com.emrekizil.core_model.MovieDetail
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -14,9 +17,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class FavoriteViewModel @Inject constructor(
-    private val getFavoriteMovieUseCase: com.emrekizil.core_domain.GetFavoriteMovieUseCase,
-    private val insertMovieUseCase: com.emrekizil.core_domain.InsertMovieUseCase,
-    private val deleteMovieUseCase: com.emrekizil.core_domain.DeleteMovieUseCase
+    private val getFavoriteMovieUseCase: GetFavoriteMovieUseCase,
+    private val insertMovieUseCase: InsertMovieUseCase,
+    private val deleteMovieUseCase: DeleteMovieUseCase
 ) : ViewModel() {
 
     private val _favoriteUiState = MutableStateFlow(emptyList<MovieDetail>())

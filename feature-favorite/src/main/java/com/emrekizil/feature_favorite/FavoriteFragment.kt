@@ -8,6 +8,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.emrekizil.core_model.MovieDetail
+import com.emrekizil.core_ui.base.BaseFragment
 import com.emrekizil.feature_favorite.databinding.FragmentFavoriteBinding
 
 import dagger.hilt.android.AndroidEntryPoint
@@ -15,7 +16,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class FavoriteFragment : com.emrekizil.core_ui.base.BaseFragment<FragmentFavoriteBinding>(FragmentFavoriteBinding::inflate) {
+class FavoriteFragment : BaseFragment<FragmentFavoriteBinding>(FragmentFavoriteBinding::inflate) {
 
     private val viewModel: FavoriteViewModel by viewModels()
     private val adapter by lazy {

@@ -1,5 +1,6 @@
 package com.emrekizil.core_domain
 
+import com.emrekizil.core_domain.repository.MovieRepository
 import com.emrekizil.core_model.MovieDetail
 import javax.inject.Inject
 

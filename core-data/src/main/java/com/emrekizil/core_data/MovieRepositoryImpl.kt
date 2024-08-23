@@ -6,8 +6,13 @@ import androidx.paging.PagingData
 import com.emrekizil.core_data.mapper.toMovieList
 import com.emrekizil.core_data.paging.MoviePagingSource
 import com.emrekizil.core_data.paging.SearchMoviePagingSource
-import com.emrekizil.core_domain.MovieRepository
+import com.emrekizil.core_database.local.LocalDataSource
+import com.emrekizil.core_domain.repository.MovieRepository
+import com.emrekizil.core_model.Movie
+import com.emrekizil.core_model.MovieDetail
+import com.emrekizil.core_model.ResponseState
 import com.emrekizil.core_model.dto.detail.MovieDetailResponse
+import com.emrekizil.core_network.remote.RemoteDataSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
@@ -15,11 +20,11 @@ import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class MovieRepositoryImpl @Inject constructor(
-    private val remoteDataSource: com.emrekizil.core_network.remote.RemoteDataSource,
-    private val localDataSource: com.emrekizil.core_database.local.LocalDataSource
+    private val remoteDataSource: RemoteDataSource,
+    private val localDataSource: LocalDataSource
 ) :
     MovieRepository {
-    override fun getPopularMovie(pageNumber: Int): Flow<PagingData<com.emrekizil.core_model.Movie>> {
+    override fun getPopularMovie(pageNumber: Int): Flow<PagingData<Movie>> {
         return Pager(
             config = PagingConfig(20),
         ) {
@@ -29,7 +34,7 @@ class MovieRepositoryImpl @Inject constructor(
 
     }
 
-    override fun getMovieByName(pageNumber: Int, query: String): Flow<PagingData<com.emrekizil.core_model.Movie>> {
+    override fun getMovieByName(pageNumber: Int, query: String): Flow<PagingData<Movie>> {
         return Pager(
             config = PagingConfig(20),
         ) {
@@ -38,36 +43,36 @@ class MovieRepositoryImpl @Inject constructor(
             .flow
     }
 
-    override fun getMovieDetailById(movieId: Int): Flow<com.emrekizil.core_model.ResponseState<MovieDetailResponse>> {
+    override fun getMovieDetailById(movieId: Int): Flow<ResponseState<MovieDetailResponse>> {
         return flow {
-            emit(com.emrekizil.core_model.ResponseState.Loading)
+            emit(ResponseState.Loading)
             val response = remoteDataSource.getMovieDetailById(movieId).body()!!
-            emit(com.emrekizil.core_model.ResponseState.Success(response))
+            emit(ResponseState.Success(response))
         }.catch {
-            emit(com.emrekizil.core_model.ResponseState.Error(it.message.orEmpty()))
+            emit(ResponseState.Error(it.message.orEmpty()))
         }
     }
 
-    override suspend fun insertMovie(movie: com.emrekizil.core_model.MovieDetail) {
+    override suspend fun insertMovie(movie: MovieDetail) {
         localDataSource.insertMovie(movie.toEntity())
     }
 
-    override suspend fun deleteMovie(movie: com.emrekizil.core_model.MovieDetail) {
+    override suspend fun deleteMovie(movie: MovieDetail) {
         localDataSource.deleteMovie(movie.toEntity())
     }
 
-    override fun getFavoriteMovies(): Flow<List<com.emrekizil.core_model.MovieDetail>> =
+    override fun getFavoriteMovies(): Flow<List<MovieDetail>> =
         localDataSource.getFavoriteMovies().map {
             it.map { entity -> entity.toMovieDetail() }
         }
 
-    override fun getSimilarMovieById(movieId: Int): Flow<com.emrekizil.core_model.ResponseState<List<com.emrekizil.core_model.Movie>>> {
+    override fun getSimilarMovieById(movieId: Int): Flow<ResponseState<List<Movie>>> {
         return flow {
-            emit(com.emrekizil.core_model.ResponseState.Loading)
+            emit(ResponseState.Loading)
             val response = remoteDataSource.getSimilarMovieById(movieId).toMovieList().take(3)
-            emit(com.emrekizil.core_model.ResponseState.Success(response))
+            emit(ResponseState.Success(response))
         }.catch {
-            emit(com.emrekizil.core_model.ResponseState.Error(it.message.orEmpty()))
+            emit(ResponseState.Error(it.message.orEmpty()))
         }
     }
 

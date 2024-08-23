@@ -1,11 +1,12 @@
 package com.emrekizil.core_database.local
 
+import com.emrekizil.core_database.database.MovieDao
 import com.emrekizil.core_model.entity.FavoriteMovieEntity
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class LocalDataSourceImpl @Inject constructor(
-    private val movieDao: com.emrekizil.core_database.database.MovieDao,
+    private val movieDao: MovieDao,
     private val layoutPreferenceSource:
     LayoutPreferenceSource
 ) : LocalDataSource {

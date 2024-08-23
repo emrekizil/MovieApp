@@ -1,5 +1,6 @@
 package com.emrekizil.core_network.di
 
+import com.emrekizil.core_network.api.MovieApi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -23,8 +24,8 @@ object NetworkModule {
 
     @Provides
     @ViewModelScoped
-    fun provideMovieApi(retrofit: Retrofit): com.emrekizil.core_network.api.MovieApi {
-        return retrofit.create(com.emrekizil.core_network.api.MovieApi::class.java)
+    fun provideMovieApi(retrofit: Retrofit): MovieApi {
+        return retrofit.create(MovieApi::class.java)
     }
 }
 
