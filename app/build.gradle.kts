@@ -1,6 +1,3 @@
-import java.io.FileInputStream
-import java.util.Properties
-
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
@@ -13,19 +10,12 @@ android {
     namespace = "com.emrekizil.movieapp"
     compileSdk = 34
 
-    val file = rootProject.file("local.properties")
-    val properties = Properties()
-    properties.load(FileInputStream(file))
-
     defaultConfig {
         applicationId = "com.emrekizil.movieapp"
         minSdk = 21
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
-
-        buildConfigField("String", "API_KEY", properties.getProperty("API_KEY"))
-        buildConfigField("String", "GEMINI_API_KEY", properties.getProperty("GEMINI_API_KEY"))
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
@@ -39,12 +29,6 @@ android {
                 "proguard-rules.pro"
             )
         }
-    }
-
-    buildFeatures {
-        viewBinding = true
-        buildConfig = true
-        compose = true
     }
 
     compileOptions {
@@ -63,17 +47,25 @@ android {
 }
 
 dependencies {
+    implementation(project(":core-database"))
+    implementation(project(":core-data"))
+    implementation(project(":core-network"))
+    implementation(project(":core-model"))
+    implementation(project(":core-domain"))
+    implementation(project(":core-ui"))
+    implementation(project(":navigation"))
+    implementation(project(":feature-home"))
+    implementation(project(":feature-search"))
+    implementation(project(":feature-favorite"))
+    implementation(project(":feature-chat"))
+    implementation(project(":feature-detail"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
-
-    // Retrofit
-    implementation(libs.retrofit)
-    implementation(libs.converter.gson)
-
+    
     //Hilt
     implementation("com.google.dagger:hilt-android:2.51.1")
     implementation(libs.androidx.legacy.support.v4)
@@ -82,38 +74,13 @@ dependencies {
     implementation(libs.androidx.fragment.ktx)
     kapt("com.google.dagger:hilt-compiler:2.51.1")
 
-    //Coil
-    implementation(libs.coil)
-
     //Navigation
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
 
-    //Coroutines
-    implementation(libs.kotlinx.coroutines.android)
-
-    //Paging
-    implementation(libs.androidx.paging.runtime)
-
-    //Room
-    implementation(libs.androidx.room.runtime)
-    kapt (libs.androidx.room.compiler)
-    implementation(libs.androidx.room.ktx)
-
-    //DataStore
-    implementation (libs.androidx.datastore.preferences)
-
     //Splash
     implementation("androidx.core:core-splashscreen:1.2.0-alpha01")
 
-    //Compose
-    implementation("androidx.activity:activity-compose:1.8.1")
-    implementation(platform("androidx.compose:compose-bom:2023.03.00"))
-    implementation("androidx.compose.ui:ui")
-    implementation("androidx.compose.ui:ui-tooling-preview")
-    implementation("androidx.compose.material3:material3")
-    implementation("com.google.ai.client.generativeai:generativeai:0.7.0")
-    
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

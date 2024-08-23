@@ -1,0 +1,90 @@
+package com.emrekizil.feature_favorite
+
+import android.view.View
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.RecyclerView
+import com.emrekizil.core_model.MovieDetail
+import com.emrekizil.feature_favorite.databinding.FragmentFavoriteBinding
+
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
+
+@AndroidEntryPoint
+class FavoriteFragment : com.emrekizil.core_ui.base.BaseFragment<FragmentFavoriteBinding>(FragmentFavoriteBinding::inflate) {
+
+    private val viewModel: FavoriteViewModel by viewModels()
+    private val adapter by lazy {
+        FavoriteMovieAdapter().apply {
+            setOnMovieItemClickListener {
+                val action = FavoriteFragmentDirections.actionFavoriteFragmentToDetailFragment(it)
+                navigate(action)
+            }
+        }
+    }
+
+    override fun observeUi() {
+        super.observeUi()
+        viewModel.getFavoriteMovies()
+        binding.favoriteRecyclerView.adapter = this.adapter
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.favoriteUiState.collectLatest { data ->
+                    adapter.updateItems(data)
+                    showFavoriteUiState(data)
+                }
+            }
+        }
+        showBottomNavigationBar()
+        initView()
+    }
+
+    private fun showFavoriteUiState(data: List<MovieDetail>) {
+        if (data.isEmpty()) {
+            with(binding) {
+                emptyListImageView.visibility = View.VISIBLE
+                emptyListHeaderTextView.visibility = View.VISIBLE
+                emptyListOverviewTextView.visibility = View.VISIBLE
+            }
+        } else {
+            with(binding) {
+                emptyListImageView.visibility = View.GONE
+                emptyListHeaderTextView.visibility = View.GONE
+                emptyListOverviewTextView.visibility = View.GONE
+            }
+        }
+    }
+
+    private fun initView() {
+        val itemTouchHelperCallback = object : ItemTouchHelper.SimpleCallback(
+            ItemTouchHelper.UP or ItemTouchHelper.DOWN,
+            ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
+        ) {
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean {
+                return true
+            }
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val position = viewHolder.bindingAdapterPosition
+                val movie = adapter.getItem(position)
+                viewModel.deleteMovie(movie)
+                showSnackbar(
+                    getString(com.emrekizil.core_ui.R.string.movie_successfully_deleted),
+                    getString(com.emrekizil.core_ui.R.string.undo)
+                ) {
+                    viewModel.insertMovie(movie)
+                }
+            }
+        }
+
+        ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(binding.favoriteRecyclerView)
+    }
+}
